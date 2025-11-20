@@ -1,34 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from './components/Header'
+import Banner from './components/Banner'
+import FeaturedNews from './components/FeaturedNews'
+import NewsList from './components/NewsList'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-h-screen pb-10">
+      <Header />
+
+      <Banner />
+
+      <main className="container mx-auto px-4">
+        {/* Layout Grid: Mobile 1 cột, Desktop 3 cột (2 phần chính - 1 phần phụ) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Cột bên trái: Tin nổi bật (chiếm 2 cột ở desktop) */}
+          <div className="md:col-span-2">
+            <FeaturedNews />
+          </div>
+
+          {/* Cột bên phải: Danh sách tin (chiếm 1 cột) */}
+          <div className="md:col-span-1">
+            <NewsList />
+          </div>
+        </div>
+      </main>
+    </div>
   )
 }
 
