@@ -1,26 +1,38 @@
-// src/components/FeaturedNews.jsx
+import ArticleItem from './ArticleItem'
+
 const FeaturedNews = () => {
+  // Mock data
+  const mainStory = {
+    title: 'Giá vàng nhẫn trơn lập đỉnh lịch sử, vượt 84 triệu đồng',
+    description: 'Mỗi lượng vàng nhẫn trơn sáng nay tăng gần 1 triệu đồng, lên đỉnh lịch sử mới 84,3 triệu đồng, trong khi vàng miếng SJC đi ngang.',
+    image: 'https://images.unsplash.com/photo-1610375461246-83648bf018c5?q=80&w=800&auto=format&fit=crop',
+    time: '2 giờ trước'
+  }
+
+  const subStories = [
+    { title: 'Đề xuất CSGT được hóa trang bắn tốc độ', description: 'Bộ Công an đề xuất CSGT được mặc thường phục để vận hành thiết bị kỹ thuật nghiệp vụ.' },
+    { title: 'Nga tuyên bố kiểm soát thêm làng ở Donetsk', description: 'Bộ Quốc phòng Nga thông báo quân đội nước này đã giành quyền kiểm soát làng Zhelanne.' },
+    { title: 'HLV Kim Sang-sik: "Tuyển Việt Nam sẽ khác khi đấu Ấn Độ"', description: 'HLV trưởng tuyển Việt Nam khẳng định đội tuyển sẽ trình diễn bộ mặt tích cực hơn.' }
+  ]
+
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer group">
-      <div className="relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1444653614773-995cb1ef902a?q=80&w=1000&auto=format&fit=crop"
-          alt="Tin chính"
-          className="w-full h-[400px] object-cover group-hover:scale-105 transition duration-500"
-        />
-      </div>
-      <div className="p-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 hover:text-blue-600">
-          Tổng Bí thư Tô Lâm thăm, làm việc tại đặc khu Thổ Châu
-        </h2>
-        <div className="flex items-center gap-3 text-xs text-gray-400 mt-3">
-          <img src="https://via.placeholder.com/20" className="w-5 h-5 rounded-full" alt="logo báo" />
-          <span className="font-semibold text-gray-500">PHÁP LUẬT</span>
-          <span>•</span>
-          <span>15 liên quan</span>
+    <section className="bg-white p-4 md:p-6 border-b border-gray-200">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Cột Tin Chính (Chiếm 8 phần) */}
+          <div className="lg:col-span-8 border-r border-gray-100 pr-0 lg:pr-6">
+            <ArticleItem data={mainStory} type="main" />
+          </div>
+
+          {/* Cột Tin Phụ (Chiếm 4 phần) */}
+          <div className="lg:col-span-4 flex flex-col justify-between">
+            {subStories.map((story, index) => (
+              <ArticleItem key={index} data={story} type="title-only" />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
