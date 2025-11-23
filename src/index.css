@@ -1,6 +1,19 @@
 /* src/index.css */
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Helvetica", "Arial", sans-serif;
+  --font-serif: "Merriweather", "Times New Roman", serif;
+  --color-vn-red: #9f224e;
+  --color-vn-gray: #f7f7f7;
+}
+
 body {
-  background-color: #f3f4f6; /* Màu nền xám nhẹ */
+  background-color: var(--color-vn-gray);
+  font-family: var(--font-sans);
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif); /* Dùng font có chân cho tiêu đề */
 }

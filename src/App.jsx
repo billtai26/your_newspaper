@@ -1,29 +1,43 @@
 import Header from './components/Header'
-import Banner from './components/Banner'
 import FeaturedNews from './components/FeaturedNews'
-import NewsList from './components/NewsList'
+import RecentNews from './components/RecentNews' // Import component mới
+import NewsList from './components/NewsList' // Cái này giờ sẽ đóng vai trò là Sidebar bên phải
 
 function App() {
   return (
-    <div className="min-h-screen pb-10">
+    <div className="min-h-screen pb-10 bg-[#fcfcfc]">
       <Header />
 
-      <Banner />
+      <main className="container mx-auto px-4 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-      <main className="container mx-auto px-4">
-        {/* Layout Grid: Mobile 1 cột, Desktop 3 cột (2 phần chính - 1 phần phụ) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Cột bên trái: Tin nổi bật (chiếm 2 cột ở desktop) */}
+          {/* === CỘT TRÁI (Chiếm 2 phần) === */}
           <div className="md:col-span-2">
+            {/* 1. Phần Tin Nổi Bật (Trên cùng) */}
             <FeaturedNews />
+
+            {/* 2. Phần Tin Vừa Cập Nhật (Sẽ lấp đầy khoảng trắng bên dưới) */}
+            <RecentNews />
           </div>
 
-          {/* Cột bên phải: Danh sách tin (chiếm 1 cột) */}
-          <div className="md:col-span-1">
+          {/* === CỘT PHẢI (Chiếm 1 phần - Sidebar) === */}
+          <div className="md:col-span-1 pl-0 md:pl-6 md:border-l border-gray-200">
+            {/* Sidebar có thể chứa quảng cáo, tin đọc nhiều, tỷ giá... */}
+            <div className="bg-gray-100 p-4 rounded mb-6 text-center text-gray-500 text-sm min-h-[200px] flex items-center justify-center">
+                Khu vực Quảng Cáo
+            </div>
             <NewsList />
           </div>
+
         </div>
       </main>
+
+      <footer className="bg-gray-100 border-t border-gray-200 py-8 mt-8">
+        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
+          <p>© 2025 VnExpress. All rights reserved.</p>
+          <p className="mt-2">Báo tiếng Việt nhiều người xem nhất.</p>
+        </div>
+      </footer>
     </div>
   )
 }
