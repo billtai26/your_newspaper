@@ -17,3 +17,14 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif); /* Dùng font có chân cho tiêu đề */
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Ẩn cho Chrome, Safari và Opera */
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* Ẩn cho IE và Edge */
+    scrollbar-width: none;  /* Ẩn cho Firefox */
+  }
+}
