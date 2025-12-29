@@ -13,10 +13,10 @@ const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
       <div className={`group cursor-pointer ${className}`}>
         <Link to={`/tin-tuc/${id}`}> {/* Bao bọc bằng Link để chuyển trang */}
           <div className="overflow-hidden bg-gray-200 mb-3">
-            <img 
-              src={image} 
-              alt={title} 
-              className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-500" 
+            <img
+              src={image}
+              alt={title}
+              className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-500"
             />
           </div>
           <h2 className="text-3xl font-bold leading-tight mb-3 group-hover:text-vn-red transition-colors">
