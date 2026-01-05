@@ -11,6 +11,8 @@ import PostManagement from './pages/PostManagement'
 import UserManagement from './pages/UserManagement'
 import CategoryManagement from './pages/CategoryManagement'
 import CommentManagement from './pages/CommentManagement'
+import Login from './pages/Login';
+import Register from './pages/Register'
 
 // Component Trang Chủ
 const HomePage = () => (
@@ -45,14 +47,16 @@ function App() {
 
         {/* Tất cả các Route khác sẽ được bọc trong giao diện chung (Header/Footer) */}
         <Route
-          path="*"
+          path="/*"
           element={
             <div className="flex flex-col min-h-screen bg-[#fcfcfc]">
               <Header />
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/tin-tuc/:id" element={<ArticleDetail />} />
+                  <Route path="/article/:id" element={<ArticleDetail />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
                   {/* Bạn có thể thêm các route khác của trang người dùng ở đây */}
                 </Routes>
               </main>

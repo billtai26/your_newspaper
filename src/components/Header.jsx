@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react' // <--- Thêm useRef, useEffect
 import { Search, User, Menu, ChevronDown, CloudSun, Bell, ChevronLeft, ChevronRight } from 'lucide-react' // <--- Thêm icon mũi tên
-import AuthModal from './AuthModal'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
-  const [showModal, setShowModal] = useState(false)
   const navRef = useRef(null) // Ref để điều khiển thanh cuộn
   const [showLeftArrow, setShowLeftArrow] = useState(false)
   const [showRightArrow, setShowRightArrow] = useState(true)
@@ -45,8 +44,6 @@ const Header = () => {
 
   return (
     <>
-      <AuthModal isOpen={showModal} onClose={() => setShowModal(false)} />
-
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 font-sans">
         {/* --- PHẦN TRÊN (LOGO & UTILS) - GIỮ NGUYÊN --- */}
         <div className="container mx-auto px-4 h-[60px] flex items-center justify-between text-[14px] text-gray-600">
@@ -78,10 +75,13 @@ const Header = () => {
             <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-vn-red transition-colors">
               <Search size={18} />
             </button>
-            <button onClick={() => setShowModal(true)} className="flex items-center gap-2 text-gray-500 hover:text-vn-red transition-colors">
+            <Link
+              to="/login"
+              className="flex items-center gap-2 text-gray-500 hover:text-vn-red transition-colors"
+            >
               <User size={20} className="stroke-[1.5]" />
               <span className="hidden sm:inline text-sm">Đăng nhập</span>
-            </button>
+            </Link>
             <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-vn-red transition-colors relative">
               <Bell size={18} />
               <span className="absolute top-1.5 right-2 w-2 h-2 bg-vn-red rounded-full border border-white"></span>

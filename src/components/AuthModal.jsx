@@ -30,7 +30,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
           {/* Tiêu đề */}
           <h2 className="text-2xl font-serif font-bold text-center text-gray-800 mb-6">
-            Đăng nhập / Tạo tài khoản
+            Đăng nhập
           </h2>
 
           {/* Form Email */}
