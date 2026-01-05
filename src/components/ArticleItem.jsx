@@ -11,7 +11,7 @@ const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
   if (type === 'main') {
     return (
       <div className={`group cursor-pointer ${className}`}>
-        <Link to={`/tin-tuc/${id}`}> {/* Bao bọc bằng Link để chuyển trang */}
+        <Link to={`/article/${id}`}> {/* Bao bọc bằng Link để chuyển trang */}
           <div className="overflow-hidden bg-gray-200 mb-3">
             <img
               src={image}
@@ -32,7 +32,7 @@ const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
   if (type === 'title-only') {
     return (
       <div className={`group cursor-pointer border-b border-gray-100 py-3 last:border-0 ${className}`}>
-        <Link to={`/tin-tuc/${id}`}>
+        <Link to={`/article/${id}`}>
           <h3 className="text-lg font-bold leading-snug group-hover:text-vn-red transition-colors mb-1">
             {title}
           </h3>
@@ -46,11 +46,11 @@ const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
   if (type === 'horizontal') {
     return (
       <div className={`flex gap-4 border-b border-gray-200 py-5 last:border-0 group cursor-pointer ${className}`}>
-        <Link to={`/tin-tuc/${id}`} className="w-1/3 md:w-240px shrink-0">
+        <Link to={`/article/${id}`} className="w-1/3 md:w-240px shrink-0">
           <img src={image} alt={title} className="w-full h-full object-cover rounded-sm bg-gray-100" />
         </Link>
         <div className="flex-1">
-          <Link to={`/tin-tuc/${id}`}>
+          <Link to={`/article/${id}`}>
             <h3 className="text-xl font-bold mb-2 group-hover:text-vn-red transition-colors">
               {title}
             </h3>
@@ -74,14 +74,14 @@ const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
   // 4. Mặc định (Sidebar)
   return (
     <div className={`group cursor-pointer py-3 border-b border-gray-100 last:border-0 ${className}`}>
-      <Link to={`/tin-tuc/${id}`}>
+      <Link to={`/article/${id}`}>
         <h3 className="text-base font-bold mb-2 group-hover:text-vn-red transition-colors">
           {title}
         </h3>
       </Link>
       <div className="flex gap-3">
         {image && (
-          <Link to={`/tin-tuc/${id}`} className="shrink-0">
+          <Link to={`/article/${id}`} className="shrink-0">
             <img src={image} alt={title} className="w-24 h-16 object-cover rounded-sm" />
           </Link>
         )}
