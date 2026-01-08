@@ -11,8 +11,10 @@ import PostManagement from './pages/PostManagement'
 import UserManagement from './pages/UserManagement'
 import CategoryManagement from './pages/CategoryManagement'
 import CommentManagement from './pages/CommentManagement'
-import Login from './pages/Login';
+import ActivateAccount from './pages/ActivateAccount'
+import Login from './pages/Login'
 import Register from './pages/Register'
+import { ToastContainer } from 'react-toastify'
 
 // Component Trang Chủ
 const HomePage = () => (
@@ -35,6 +37,18 @@ const HomePage = () => (
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Routes>
         {/* Route dành riêng cho Admin: Không hiển thị Header và Footer của trang tin tức */}
         <Route path="/admin" element={<AdminLayout />}>
@@ -57,6 +71,7 @@ function App() {
                   <Route path="/article/:id" element={<ArticleDetail />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/activate/:token" element={<ActivateAccount />} />
                   {/* Bạn có thể thêm các route khác của trang người dùng ở đây */}
                 </Routes>
               </main>

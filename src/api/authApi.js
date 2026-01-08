@@ -8,6 +8,10 @@ const authApi = {
   login: (data) => {
     const url = '/authenticate/login'
     return axiosClient.post(url, data)
+  },
+  // Nếu bạn muốn kiểm tra trạng thái token từ FE
+  activate: (token) => {
+    return axiosClient.get(`/authenticate/activate/${token}`)
   }
 }
 
