@@ -1,55 +1,48 @@
 import { useEffect, useState } from 'react'
 import axiosClient from '../api/axiosClient'
 import ArticleItem from './ArticleItem'
+import { toast } from 'react-toastify'
 
 const NewsList = () => {
-  const [listNews, setListNews] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [news, setNews] = useState([])
+
+  const getSummary = (content, maxLength = 160) => {
+    if (!content) return ''
+    const plainText = content.replace(/<[^>]*>?/gm, '')
+    return plainText.length <= maxLength ? plainText : plainText.substring(0, maxLength).trim() + '...'
+  }
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axiosClient.get('/admin/news/news-list')
-        // Quan trọng: lấy response.data.data
+        // Lấy danh sách tin (ví dụ 15 tin)
+        const response = await axiosClient.get('/admin/news/news-list?limit=15')
         const newsArray = response.data.data
 
-        if (Array.isArray(newsArray)) {
-          setListNews(newsArray)
+        if (newsArray && newsArray.length > 5) {
+          // Bỏ qua 5 tin đầu đã dùng ở FeaturedNews
+          const remainingNews = newsArray.slice(5).map(item => ({
+            id: item._id,
+            title: item.Title,
+            description: getSummary(item.Content, 200),
+            image: item.Image,
+            time: '2 giờ trước'
+          }))
+          setNews(remainingNews)
         }
       } catch (error) {
-        console.error('Lỗi:', error)
+        toast.error('Lỗi NewsList:', error)
       }
     }
-
     fetchNews()
   }, [])
 
-  if (loading) return <div className="text-center py-10">Đang tải tin tức...</div>
-
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-full">
-          <div className="flex items-center gap-4 mb-4 border-b border-gray-200 pb-2">
-            <h3 className="text-lg font-bold text-vn-red uppercase">Mới nhất</h3>
-          </div>
-          <div className="flex flex-col">
-            {listNews.map((item) => (
-              <ArticleItem
-                key={item._id}
-                data={{
-                  id: item._id,
-                  title: item.Title, // Lưu ý: Backend dùng Title (chữ T hoa)
-                  description: item.Content, // Map Content vào description
-                  image: item.Image, // Đường dẫn ảnh từ Cloudinary
-                  time: 'Vừa xong' // Bạn có thể map thêm trường ngày tạo nếu có
-                }}
-                type="horizontal"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+    <div className="space-y-2">
+      {news.map(item => (
+        // Hiển thị dạng ngang tràn chiều ngang màn hình
+        <ArticleItem key={item.id} data={item} type="horizontal" />
+      ))}
     </div>
   )
 }

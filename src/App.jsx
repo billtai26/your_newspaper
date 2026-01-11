@@ -19,30 +19,15 @@ import { ToastContainer } from 'react-toastify'
 // Component Trang Chủ
 const HomePage = () => (
   <main className="container mx-auto px-4 mt-6">
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Cột chính: 3/4 độ rộng trên màn hình lớn */}
-      <div className="lg:col-span-3 space-y-10">
-        <section>
-          <h2 className="text-vn-red border-l-4 border-vn-red pl-3 font-bold text-xl mb-4">TIN NỔI BẬT</h2>
-          <FeaturedNews />
-        </section>
+    {/* Phần tin nổi bật 1 to 4 */}
+    <FeaturedNews />
 
-        <section>
-          <h2 className="text-gray-800 border-l-4 border-gray-800 pl-3 font-bold text-xl mb-4">TIN MỚI NHẤT</h2>
-          <RecentNews />
-        </section>
-      </div>
-
-      {/* Sidebar: 1/4 độ rộng */}
-      <div className="lg:col-span-1 space-y-8">
-        <div className="bg-gray-50 p-4 border border-gray-100 rounded-lg sticky top-24">
-          <div className="bg-gray-200 h-64 rounded flex items-center justify-center text-gray-400 mb-6">
-            Quảng Cáo
-          </div>
-          <h3 className="font-bold text-lg mb-4 border-b pb-2">ĐỌC NHIỀU</h3>
-          <NewsList />
-        </div>
-      </div>
+    {/* Phần tin tức còn lại hiển thị ngang, full màn hình */}
+    <div className="mt-10">
+      <h2 className="text-xl font-bold mb-6 pb-2 border-b-2 border-vn-red inline-block">
+        TIN TỨC KHÁC
+      </h2>
+      <NewsList />
     </div>
   </main>
 )
