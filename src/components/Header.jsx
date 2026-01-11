@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Search, User, Menu, ChevronDown, CloudSun, Bell, ChevronLeft, ChevronRight, LogOut } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import categoryApi from '../api/categoryApi' // Import API vừa tạo
+import { toast } from 'react-toastify'
 
 const Header = () => {
   const navRef = useRef(null)
@@ -10,6 +12,22 @@ const Header = () => {
 
   const [showLeftArrow, setShowLeftArrow] = useState(false)
   const [showRightArrow, setShowRightArrow] = useState(true)
+  // 1. Chuyển categories thành state
+  const [categories, setCategories] = useState([])
+
+  // 2. Gọi API lấy danh mục khi component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoryApi.getAll()
+        // Giả sử response trả về là mảng các object danh mục
+        setCategories(response.data || [])
+      } catch (error) {
+        toast.error('Lỗi lấy danh mục:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
 
   // Đọc thông tin từ localStorage
   const token = localStorage.getItem('token')
@@ -54,7 +72,7 @@ const Header = () => {
     }
   }, [])
 
-  const categories = ['Thời sự', 'Góc nhìn', 'Thế giới', 'Video', 'Podcasts', 'Kinh doanh', 'Bất động sản', 'Khoa học', 'Giải trí', 'Thể thao', 'Pháp luật', 'Giáo dục', 'Sức khỏe', 'Đời sống', 'Du lịch', 'Số hóa', 'Xe', 'Tâm sự', 'Hài']
+  // const categories = ['Thời sự', 'Góc nhìn', 'Thế giới', 'Video', 'Podcasts', 'Kinh doanh', 'Bất động sản', 'Khoa học', 'Giải trí', 'Thể thao', 'Pháp luật', 'Giáo dục', 'Sức khỏe', 'Đời sống', 'Du lịch', 'Số hóa', 'Xe', 'Tâm sự', 'Hài']
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 font-sans">
@@ -122,9 +140,14 @@ const Header = () => {
             <div className="p-1.5 bg-gray-100 rounded-full cursor-pointer hover:bg-gray-200 shrink-0">
               <Menu size={18} className="text-gray-600" />
             </div>
+            {/* 3. Duyệt mảng categories từ API */}
             {categories.map((cat) => (
-              <a key={cat} href="#" className="text-[14px] font-bold text-gray-700 hover:text-vn-red transition-colors">
-                {cat}
+              <a
+                key={cat._id}
+                href={`/category/${cat._id}`}
+                className="text-[14px] font-bold text-gray-700 hover:text-vn-red transition-colors"
+              >
+                {cat.Name} {/* Hiển thị tên danh mục từ DB */}
               </a>
             ))}
           </div>
