@@ -25,7 +25,7 @@ const FeaturedNews = () => {
             id: item._id,
             title: item.Title,
             description: getSummary(item.Content, 150),
-            image: item.Image,
+            image: item.Image
             // time: '2 giờ trước'
           }))
 
