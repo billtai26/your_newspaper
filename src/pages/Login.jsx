@@ -15,6 +15,7 @@ const Login = () => {
       if (response.data.status) {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('role', response.data.role)
+        localStorage.setItem('username', response.data.username) // Thêm dòng này
 
         toast.success('Chào mừng bạn quay trở lại!')
 
