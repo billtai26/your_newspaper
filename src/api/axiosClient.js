@@ -7,5 +7,13 @@ const axiosClient = axios.create({
   }
 })
 
-// Bạn có thể thêm interceptors ở đây để xử lý token (JWT) sau này
+// Interceptor để tự động đính kèm Token vào Header mỗi khi gọi API
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token') // Giả sử bạn lưu token với key 'token'
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 export default axiosClient
