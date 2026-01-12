@@ -20,10 +20,25 @@ const Header = () => {
     const fetchCategories = async () => {
       try {
         const response = await categoryApi.getAll()
-        // Giả sử response trả về là mảng các object danh mục
-        setCategories(response.data || [])
+
+        // Axios trả về body của response trong thuộc tính .data
+        // Body hiện tại là { data: [...], total: X }
+        const result = response.data || response
+
+        // Kiểm tra nếu result.data là mảng (cấu trúc mới)
+        if (result && Array.isArray(result.data)) {
+          setCategories(result.data)
+        }
+        // Nếu result trực tiếp là mảng (cấu trúc cũ)
+        else if (Array.isArray(result)) {
+          setCategories(result)
+        } else {
+          setCategories([])
+        }
       } catch (error) {
+        // Tránh in lỗi ra console nếu không cần thiết, hoặc xử lý êm đẹp
         toast.error('Lỗi lấy danh mục:', error)
+        setCategories([])
       }
     }
     fetchCategories()
