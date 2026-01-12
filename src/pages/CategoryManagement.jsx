@@ -18,6 +18,7 @@ const CategoryManagement = () => {
   const [total, setTotal] = useState(0) // Tổng số bản ghi từ BE
   const [page, setPage] = useState(1) // Trang hiện tại
   const [size] = useState(10) // Số bản ghi mỗi trang
+  const [searchTerm, setSearchTerm] = useState('')
 
   // Xử lý thay đổi input
   const handleInputChange = (e) => {
@@ -104,20 +105,17 @@ const CategoryManagement = () => {
   }
 
   // Hàm lấy dữ liệu từ API
-  const fetchCategories = useCallback(async (currentPage = page) => {
+  const fetchCategories = useCallback(async (targetPage = page) => {
     try {
       setLoading(true)
-      const response = await categoryApi.getAllAdmin(currentPage, size)
+      const response = await categoryApi.getAllAdmin(targetPage, size, searchTerm)
       const result = response.data || response
 
       if (result && Array.isArray(result.data)) {
         setCategories(result.data)
         setTotal(result.total || result.data.length)
-        setPage(currentPage)
-      } else if (Array.isArray(result)) {
-        setCategories(result)
-        setTotal(result.length)
-        setPage(currentPage)
+        // Chỉ cập nhật state page nếu giá trị truyền vào khác giá trị hiện tại
+        if (targetPage !== page) setPage(targetPage)
       } else {
         setCategories([])
         setTotal(0)
@@ -128,12 +126,31 @@ const CategoryManagement = () => {
     } finally {
       setLoading(false)
     }
-  }, [page, size]) // fetchCategories sẽ thay đổi khi page hoặc size thay đổi
+  }, [size, searchTerm, page]) // Đưa đầy đủ dependency vào đây
 
-  // 3. Bây giờ bạn có thể thêm fetchCategories vào dependency mà không lo vòng lặp
+  // 3. Gộp các useEffect lại để quản lý việc fetch dữ liệu đồng nhất
   useEffect(() => {
-    fetchCategories()
-  }, [fetchCategories])
+    // Nếu đang tìm kiếm, sử dụng Debounce
+    if (searchTerm) {
+      const delayDebounceFn = setTimeout(() => {
+        fetchCategories(1) // Tìm kiếm luôn đưa về trang 1
+      }, 500)
+      return () => clearTimeout(delayDebounceFn)
+    } else {
+      // Nếu không tìm kiếm (bao gồm cả lúc mount), fetch ngay lập tức
+      fetchCategories()
+    }
+  }, [fetchCategories, searchTerm]) // 'fetchCategories' đã là dependency hợp lệ
+
+  // 4. Cập nhật nút chuyển trang trong phần Pagination
+  // Bạn chỉ cần gọi setPage, useEffect phía trên sẽ tự động nhận diện và fetch lại dữ liệu
+  const handleNextPage = () => {
+    if (page * size < total) setPage(page + 1)
+  }
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1)
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -190,6 +207,8 @@ const CategoryManagement = () => {
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-background-dark text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
               placeholder="Tìm kiếm danh mục, slug..."
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -294,7 +313,6 @@ const CategoryManagement = () => {
         </div>
 
         {/* Pagination */}
-        {/* Pagination */}
         <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-card-dark flex items-center justify-between">
           {(() => {
             const from = total === 0 ? 0 : (page - 1) * size + 1
@@ -312,7 +330,7 @@ const CategoryManagement = () => {
           <div className="flex items-center gap-2">
             {/* Nút lùi trang */}
             <button
-              onClick={() => fetchCategories(page - 1)}
+              onClick={handlePrevPage}
               disabled={page <= 1 || loading}
               className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-slate-500 hover:bg-white dark:hover:bg-gray-800 disabled:opacity-30 transition-colors"
             >
@@ -321,7 +339,7 @@ const CategoryManagement = () => {
 
             {/* Nút tiến trang */}
             <button
-              onClick={() => fetchCategories(page + 1)}
+              onClick={handleNextPage}
               disabled={page * size >= total || loading}
               className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-slate-500 hover:bg-white dark:hover:bg-gray-800 disabled:opacity-30 transition-colors"
             >

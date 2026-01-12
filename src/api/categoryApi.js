@@ -5,8 +5,8 @@ const categoryApi = {
     return axiosClient.get('/category/list')
   },
 
-  getAllAdmin: (page = 1, size = 10) => {
-    return axiosClient.get(`/admin/category/list?page=${page}&size=${size}`)
+  getAllAdmin: (page = 1, size = 10, search = '') => {
+    return axiosClient.get(`/admin/category/list?page=${page}&size=${size}&search=${search}`)
   },
 
   // Thêm hàm create mới
