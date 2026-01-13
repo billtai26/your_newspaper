@@ -18,6 +18,7 @@ import Register from './pages/Register'
 import { toast, ToastContainer } from 'react-toastify'
 import { useState, useEffect } from 'react'
 import axiosClient from './api/axiosClient'
+import SearchPage from './pages/SearchPage'
 
 // Component Trang Chủ
 const HomePage = () => {
@@ -102,6 +103,7 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/activate/:token" element={<ActivateAccount />} />
                   <Route path="/category/:id" element={<CategoryPage />} />
+                  <Route path="/search" element={<SearchPage />} />
                   {/* Bạn có thể thêm các route khác của trang người dùng ở đây */}
                 </Routes>
               </main>

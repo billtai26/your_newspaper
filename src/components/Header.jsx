@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
-import { Search, User, Menu, ChevronDown, CloudSun, Bell, ChevronLeft, ChevronRight, LogOut } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Search, User, Menu, ChevronDown, CloudSun, Bell, ChevronLeft, ChevronRight, LogOut, Clock, X } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import categoryApi from '../api/categoryApi' // Import API vừa tạo
 import { toast } from 'react-toastify'
 import CategoryModal from './CategoryModal'
+import newsApi from '../api/newsApi'
 
 const Header = () => {
   const navRef = useRef(null)
@@ -16,6 +17,11 @@ const Header = () => {
   // 1. Chuyển categories thành state
   const [categories, setCategories] = useState([])
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const searchRef = useRef(null)
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   // 2. Gọi API lấy danh mục khi component mount
   useEffect(() => {
@@ -89,6 +95,61 @@ const Header = () => {
     }
   }, [])
 
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' || e.type === 'click') {
+      if (searchTerm.trim()) {
+        navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`) // Chuyển hướng sang trang tìm kiếm
+      }
+    }
+  }
+
+  // Xử lý click ra ngoài để đóng hộp thoại
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Bọc hàm này trong useCallback
+  const fetchSuggestions = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const response = await newsApi.getAll({ search: searchTerm, limit: 5 })
+      if (response && response.data && Array.isArray(response.data.data)) {
+        setSuggestions(response.data.data)
+        setShowSuggestions(true)
+      }
+    } catch (error) {
+      toast.error('Lỗi tìm kiếm nhanh:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [searchTerm]) // fetchSuggestions sẽ thay đổi khi searchTerm thay đổi
+
+  // Bây giờ bạn có thể thêm fetchSuggestions vào dependency array của useEffect bên dưới
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim().length >= 2) {
+        fetchSuggestions()
+      } else {
+        setSuggestions([])
+        setShowSuggestions(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm, fetchSuggestions])
+
+  const handleSelectSuggestion = (id) => {
+    setShowSuggestions(false)
+    setSearchTerm('')
+    navigate(`/article/${id}`)
+  }
+
   // const categories = ['Thời sự', 'Góc nhìn', 'Thế giới', 'Video', 'Podcasts', 'Kinh doanh', 'Bất động sản', 'Khoa học', 'Giải trí', 'Thể thao', 'Pháp luật', 'Giáo dục', 'Sức khỏe', 'Đời sống', 'Du lịch', 'Số hóa', 'Xe', 'Tâm sự', 'Hài']
 
   return (
@@ -108,6 +169,60 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4 h-full">
+          {/* THANH TÌM KIẾM CÓ GỢI Ý */}
+          <div className="relative hidden md:block" ref={searchRef}>
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                className="pl-3 pr-10 py-1.5 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-vn-red w-[200px] transition-all focus:w-[300px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
+              />
+              <Search size={18} className="absolute right-3 text-gray-400" onClick={handleSearch} />
+            </div>
+
+            {/* HỘP THOẠI KẾT QUẢ (DROPDOWN) */}
+            {showSuggestions && (
+              <div className="absolute top-full mt-2 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl z-100 overflow-hidden">
+                {isLoading ? (
+                  <div className="p-4 text-center text-sm text-gray-500">Đang tìm kiếm...</div>
+                ) : suggestions.length > 0 ? (
+                  <div className="max-h-[400px] overflow-y-auto">
+                    {suggestions.map((item) => (
+                      <div
+                        key={item._id}
+                        onClick={() => handleSelectSuggestion(item._id)}
+                        className="p-3 hover:bg-gray-50 cursor-pointer flex gap-3 border-b border-gray-50 last:border-0"
+                      >
+                        {item.Image && (
+                          <img src={item.Image} className="w-12 h-12 object-cover rounded" alt="" />
+                        )}
+                        <div className="flex-1">
+                          <h4 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug">
+                            {item.Title}
+                          </h4>
+                          <p className="text-[11px] text-gray-400 mt-1 uppercase">
+                            {item.CategoryName}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    <Link
+                      to={`/search?q=${searchTerm}`}
+                      onClick={() => setShowSuggestions(false)}
+                      className="block p-2 text-center text-xs text-vn-red font-bold bg-gray-50 hover:bg-gray-100"
+                    >
+                    Xem tất cả kết quả cho "{searchTerm}"
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-sm text-gray-500">Không tìm thấy kết quả</div>
+                )}
+              </div>
+            )}
+          </div>
           <a href="#" className="bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors whitespace-nowrap hidden md:block">Mới nhất</a>
 
           {isLoggedIn ? (
