@@ -12,25 +12,56 @@ import UserManagement from './pages/UserManagement'
 import CategoryManagement from './pages/CategoryManagement'
 import CommentManagement from './pages/CommentManagement'
 import ActivateAccount from './pages/ActivateAccount'
+import CategoryPage from './pages/CategoryPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import { ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+import { useState, useEffect } from 'react'
+import axiosClient from './api/axiosClient'
 
 // Component Trang Chủ
-const HomePage = () => (
-  <main className="container mx-auto px-4 mt-6">
-    {/* Phần tin nổi bật 1 to 4 */}
-    <FeaturedNews />
+const HomePage = () => {
+  const [newsData, setNewsData] = useState({ featured: [], remaining: [] })
+  const [loading, setLoading] = useState(true)
 
-    {/* Phần tin tức còn lại hiển thị ngang, full màn hình */}
-    <div className="mt-10">
-      <h2 className="text-xl font-bold mb-6 pb-2 border-b-2 border-vn-red inline-block">
-        TIN TỨC KHÁC
-      </h2>
-      <NewsList />
-    </div>
-  </main>
-)
+  useEffect(() => {
+    const fetchAllHomeNews = async () => {
+      try {
+        const response = await axiosClient.get('/admin/news/news-list?limit=15')
+        const allNews = response.data.data
+
+        if (allNews && allNews.length > 0) {
+          setNewsData({
+            featured: allNews.slice(0, 5), // 5 tin đầu cho FeaturedNews
+            remaining: allNews.slice(5) // Các tin còn lại cho NewsList
+          })
+        }
+      } catch (error) {
+        toast.error('Lỗi trang chủ:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAllHomeNews()
+  }, [])
+
+  if (loading) return <div className="text-center p-10">Đang tải tin tức...</div>
+
+  return (
+    <main className="container mx-auto px-4 mt-6">
+      {/* Truyền dữ liệu trực tiếp xuống, không để con tự fetch nữa */}
+      <FeaturedNews data={newsData.featured} />
+
+      <div className="mt-10">
+        <h2 className="text-xl font-bold mb-6 pb-2 border-b-2 border-vn-red inline-block uppercase">
+          TIN TỨC KHÁC
+        </h2>
+        {/* Truyền mảng tin còn lại xuống NewsList */}
+        <NewsList data={newsData.remaining} />
+      </div>
+    </main>
+  )
+}
 
 function App() {
   return (
@@ -70,6 +101,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/activate/:token" element={<ActivateAccount />} />
+                  <Route path="/category/:id" element={<CategoryPage />} />
                   {/* Bạn có thể thêm các route khác của trang người dùng ở đây */}
                 </Routes>
               </main>
