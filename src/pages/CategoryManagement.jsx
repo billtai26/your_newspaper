@@ -273,7 +273,7 @@ const CategoryManagement = () => {
 
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-slate-800 dark:text-slate-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
-            0
+                        {cat.NewsCount || 0}
                       </span>
                     </td>
 
