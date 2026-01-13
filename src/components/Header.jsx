@@ -3,6 +3,7 @@ import { Search, User, Menu, ChevronDown, CloudSun, Bell, ChevronLeft, ChevronRi
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import categoryApi from '../api/categoryApi' // Import API vừa tạo
 import { toast } from 'react-toastify'
+import CategoryModal from './CategoryModal'
 
 const Header = () => {
   const navRef = useRef(null)
@@ -14,6 +15,7 @@ const Header = () => {
   const [showRightArrow, setShowRightArrow] = useState(true)
   // 1. Chuyển categories thành state
   const [categories, setCategories] = useState([])
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
 
   // 2. Gọi API lấy danh mục khi component mount
   useEffect(() => {
@@ -152,18 +154,20 @@ const Header = () => {
             </button>
           )}
           <div ref={navRef} className="flex items-center gap-5 overflow-x-auto whitespace-nowrap py-3 no-scrollbar scroll-smooth">
-            <div className="p-1.5 bg-gray-100 rounded-full cursor-pointer hover:bg-gray-200 shrink-0">
+            <div
+              onClick={() => setIsCategoryModalOpen(true)}
+              className="p-1.5 bg-gray-100 rounded-full cursor-pointer hover:bg-gray-200 shrink-0">
               <Menu size={18} className="text-gray-600" />
             </div>
             {/* 3. Duyệt mảng categories từ API */}
             {categories.map((cat) => (
-              <a
+              <Link
                 key={cat._id}
-                href={`/category/${cat._id}`}
+                to={`/category/${cat._id}`}
                 className="text-[14px] font-bold text-gray-700 hover:text-vn-red transition-colors"
               >
                 {cat.Name} {/* Hiển thị tên danh mục từ DB */}
-              </a>
+              </Link>
             ))}
           </div>
           {showRightArrow && (
@@ -173,6 +177,12 @@ const Header = () => {
           )}
         </div>
       </nav>
+
+      <CategoryModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categories={categories}
+      />
     </header>
   )
 }

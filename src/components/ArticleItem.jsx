@@ -2,8 +2,37 @@ import React from 'react'
 import { MessageSquare, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-const ArticleItem = ({ data, type = 'horizontal', className = '' }) => {
-  const { id, title, description, image, time, related } = data
+// 1. Đổi 'data' thành 'article' để khớp với CategoryPage
+const ArticleItem = ({ data, article, type = 'horizontal', className = '' }) => {
+  // Ưu tiên lấy từ 'data', nếu không có thì lấy từ 'article'
+  const item = data || article
+
+  if (!item) return null
+
+  // 1. Lấy dữ liệu thô
+  const rawDate = item.CreatedAt || item.time
+
+  // 2. Hàm định dạng ngày tháng dd/mm/yyyy
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'Đang cập nhật'
+    }
+    const date = new Date(dateString)
+
+    // Sử dụng padStart để đảm bảo có 2 chữ số (ví dụ: 05/01/2026)
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+
+    return `${day}/${month}/${year}`
+  }
+  // Map lại các trường để chấp nhận cả viết hoa (từ API) và viết thường (từ format)
+  const id = item.id || item._id
+  const title = item.title || item.Title
+  const description = item.description || item.description || item.Content
+  const image = item.image || item.Image
+  const time = formatDate(rawDate) || 'Vừa xong'
+  const related = item.related || 0
 
   // Tạo một biến imageSrc để xử lý lỗi chuỗi rỗng
   // Nếu image rỗng hoặc undefined, ta gán null hoặc link ảnh mặc định
