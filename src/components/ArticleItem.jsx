@@ -30,7 +30,9 @@ const ArticleItem = ({ data, article, type = 'horizontal', className = '' }) => 
   const id = item.id || item._id
   const title = item.title || item.Title
   const description = item.description || item.description || item.Content
-  const image = item.image || item.Image
+  const image = (item.Images && item.Images.length > 0)
+    ? item.Images[0]
+    : (item.image || item.Image)
   const time = formatDate(rawDate) || 'Vừa xong'
   const related = item.related || 0
 

@@ -55,6 +55,41 @@ const ArticleDetail = () => {
     )
   }
 
+  // Hàm xử lý hiển thị nội dung xen kẽ hình ảnh
+  const renderContentWithImages = () => {
+    if (!article.Content) return null
+
+    // Nếu không có mảng Images, hiển thị văn bản bình thường
+    if (!article.Images || article.Images.length === 0) {
+      return <div className="whitespace-pre-line">{article.Content}</div>
+    }
+
+    // Tách nội dung văn bản dựa trên ký hiệu [image]
+    const parts = article.Content.split('[image]')
+
+    return (
+      <div className="article-content text-lg leading-relaxed text-gray-700 space-y-4">
+        {parts.map((part, index) => (
+          <React.Fragment key={index}>
+            {/* Hiển thị đoạn văn bản */}
+            <div className="whitespace-pre-line">{part}</div>
+
+            {/* Chèn hình ảnh tương ứng nếu còn ảnh trong mảng */}
+            {article.Images[index] && (
+              <figure className="my-8">
+                <img
+                  src={article.Images[index]}
+                  alt={`${article.Title} - ảnh ${index + 1}`}
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              </figure>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto px-4 mt-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -76,14 +111,30 @@ const ArticleDetail = () => {
           </h1>
 
           {/* Ảnh bìa bài viết nếu có (Sửa từ image thành Image) */}
-          {article.Image && (
-            <figure className="mb-6">
-              <img
-                src={article.Image}
-                alt={article.Title}
-                className="w-full h-auto rounded-sm shadow-sm"
-              />
-            </figure>
+          {renderContentWithImages()}
+          {article.Images && Array.isArray(article.Images) && article.Images.length > 0 ? (
+            <div className="space-y-4 mb-6">
+              {article.Images.map((imgUrl, index) => (
+                <figure key={index} className="w-full">
+                  <img
+                    src={imgUrl}
+                    alt={`${article.Title} - ảnh ${index + 1}`}
+                    className="w-full h-auto rounded-sm shadow-sm"
+                  />
+                </figure>
+              ))}
+            </div>
+          ) : (
+          // Fallback nếu không có Images nhưng có Image (dữ liệu cũ)
+            article.Image && (
+              <figure className="mb-6">
+                <img
+                  src={article.Image}
+                  alt={article.Title}
+                  className="w-full h-auto rounded-sm shadow-sm"
+                />
+              </figure>
+            )
           )}
 
           {/* Nội dung chi tiết (Sửa từ content thành Content) */}
