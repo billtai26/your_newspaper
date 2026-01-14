@@ -112,38 +112,15 @@ const ArticleDetail = () => {
 
           {/* Ảnh bìa bài viết nếu có (Sửa từ image thành Image) */}
           {renderContentWithImages()}
-          {article.Images && Array.isArray(article.Images) && article.Images.length > 0 ? (
-            <div className="space-y-4 mb-6">
-              {article.Images.map((imgUrl, index) => (
-                <figure key={index} className="w-full">
-                  <img
-                    src={imgUrl}
-                    alt={`${article.Title} - ảnh ${index + 1}`}
-                    className="w-full h-auto rounded-sm shadow-sm"
-                  />
-                </figure>
-              ))}
-            </div>
-          ) : (
-          // Fallback nếu không có Images nhưng có Image (dữ liệu cũ)
-            article.Image && (
-              <figure className="mb-6">
-                <img
-                  src={article.Image}
-                  alt={article.Title}
-                  className="w-full h-auto rounded-sm shadow-sm"
-                />
-              </figure>
-            )
-          )}
+
 
           {/* Nội dung chi tiết (Sửa từ content thành Content) */}
           {/* Dùng whitespace-pre-line để hiển thị các dấu xuống dòng (\n) từ database
              Nếu nội dung là HTML từ trình soạn thảo, hãy dùng dangerouslySetInnerHTML
           */}
-          <div className="article-content text-lg leading-relaxed text-gray-700 space-y-4 whitespace-pre-line">
+          {/* <div className="article-content text-lg leading-relaxed text-gray-700 space-y-4 whitespace-pre-line">
             {article.Content}
-          </div>
+          </div> */}
 
           {/* Tác giả (Sửa từ author thành Author) */}
           <div className="mt-8 text-right font-bold text-gray-800 border-t pt-4">
