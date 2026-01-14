@@ -22,7 +22,7 @@ const PostManagement = () => {
     Author: '',
     Content: '',
     CategoryId: '',
-    Image: '' // Bây giờ là chuỗi URL
+    Images: [] // Bây giờ là chuỗi URL
   })
   const [deleteId, setDeleteId] = useState(null)
 
@@ -99,12 +99,12 @@ const PostManagement = () => {
         Title: post.Title,
         Author: post.Author,
         Content: post.Content || '',
-        CategoryId: post.CategoryId || '', // Đảm bảo lấy ID danh mục từ bài viết cũ
-        Image: post.Image || ''
+        CategoryId: post.CategoryId || '',
+        Images: post.Images || (post.Image ? [post.Image] : [])
       })
     } else {
       setIsEditing(false)
-      setFormData({ Id: '', Title: '', Author: '', Content: '', CategoryId: '', Image: '' })
+      setFormData({ Id: '', Title: '', Author: '', Content: '', CategoryId: '', Images: [] })
     }
     setIsModalOpen(true)
   }
@@ -116,6 +116,18 @@ const PostManagement = () => {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleImageChange = (index, value) => {
+    const newImages = [...formData.Images]
+    newImages[index] = value
+    setFormData({ ...formData, Images: newImages })
+  }
+
+  const addImageField = () => setFormData({ ...formData, Images: [...formData.Images, ''] })
+  const removeImageField = (index) => {
+    const newImages = formData.Images.filter((_, i) => i !== index)
+    setFormData({ ...formData, Images: newImages })
   }
 
   // Xử lý Submit Form
@@ -276,7 +288,7 @@ const PostManagement = () => {
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-12 overflow-hidden rounded-lg bg-slate-100">
                         <img
-                          src={post.Image || 'https://via.placeholder.com/150'}
+                          src={(post.Images && post.Images.length > 0) ? post.Images[0] : (post.Image || 'https://via.placeholder.com/150')}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           alt={post.Title}
                         />
@@ -359,31 +371,56 @@ const PostManagement = () => {
                   <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Tác giả</label>
                   <input type="text" name="Author" value={formData.Author} onChange={handleInputChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:border-primary" required />
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">
-    Link hình ảnh (URL)
+                <div className="col-span-2">
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 justify-between">
+    Danh sách hình ảnh (URL)
+                    <button type="button" onClick={addImageField} className="text-primary text-xs flex items-center gap-1">
+                      <span className="material-symbols-outlined text-sm">add_circle</span> Thêm ảnh
+                    </button>
                   </label>
-                  <input
-                    type="text"
-                    name="Image"
-                    value={formData.Image}
-                    onChange={handleInputChange}
-                    placeholder="Dán link ảnh vào đây"
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:border-primary"
-                  />
-                  {formData.Image && (
-                    <img
-                      src={formData.Image}
-                      className="mt-2 h-20 w-32 object-cover rounded border"
-                      alt="Preview"
-                      onError={(e) => e.target.style.display = 'none'} // Ẩn nếu link lỗi
-                    />
-                  )}
+
+                  <div className="space-y-3">
+                    {formData.Images.map((url, index) => (
+                      <div key={index} className="flex gap-2 items-start">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={url}
+                            onChange={(e) => handleImageChange(index, e.target.value)}
+                            placeholder="Dán link ảnh vào đây"
+                            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:border-primary"
+                          />
+                          {url && (
+                            <img src={url} className="mt-1 h-16 w-24 object-cover rounded border" alt="Preview"
+                              onError={(e) => e.target.style.display = 'none'} />
+                          )}
+                        </div>
+                        <button type="button" onClick={() => removeImageField(index)} className="mt-2 text-red-500">
+                          <span className="material-symbols-outlined">delete</span>
+                        </button>
+                      </div>
+                    ))}
+                    {formData.Images.length === 0 && (
+                      <p className="text-xs text-slate-400 italic">Chưa có hình ảnh nào được thêm.</p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Nội dung</label>
-                <textarea name="Content" rows="6" value={formData.Content} onChange={handleInputChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:border-primary" required></textarea>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">
+    Nội dung bài viết
+                </label>
+                <textarea
+                  name="Content"
+                  rows="10"
+                  value={formData.Content}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:border-primary"
+                  required
+                ></textarea>
+                <p className="mt-1 text-xs text-slate-500 italic">
+    * Mẹo: Gõ <span className="font-bold text-primary">[image]</span> vào nơi bạn muốn chèn một hình ảnh từ danh sách bên trên.
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
