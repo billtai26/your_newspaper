@@ -29,7 +29,13 @@ const ArticleItem = ({ data, article, type = 'horizontal', className = '' }) => 
   // Map lại các trường để chấp nhận cả viết hoa (từ API) và viết thường (từ format)
   const id = item.id || item._id
   const title = item.title || item.Title
-  const description = item.description || item.description || item.Content
+  const rawDescription = item.description || item.Content || ''
+
+  // Dùng Regex để loại bỏ thẻ [image] và cắt bớt khoảng trắng
+  const description = rawDescription
+    .replace(/\[image\]/g, '') // Xóa tất cả các chữ [image]
+    .replace(/<\/?[^>]+(>|$)/g, '') // (Tùy chọn) Xóa các thẻ HTML nếu có
+    .trim()
   const image = (item.Images && item.Images.length > 0)
     ? item.Images[0]
     : (item.image || item.Image)

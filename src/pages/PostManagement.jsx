@@ -228,7 +228,9 @@ const PostManagement = () => {
           <thead>
             <tr>
               <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Bài viết</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Danh mục</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase whitespace-nowrap">
+                  Danh mục
+              </th>
               <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Tác giả</th>
               <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Ngày tạo</th>
               <th className="px-6 py-4 text-right">Hành động</th>
@@ -302,7 +304,7 @@ const PostManagement = () => {
                     </div>
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                       {post.CategoryName || 'Chưa phân loại'}
                     </span>
