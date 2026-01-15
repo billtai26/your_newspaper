@@ -95,9 +95,11 @@ const CategoryManagement = () => {
       await categoryApi.delete(deleteId)
       toast.success('Xóa danh mục thành công!')
       setIsDeleteModalOpen(false)
-      fetchCategories() // Tải lại danh sách
+      fetchCategories()
     } catch (error) {
-      toast.error('Lỗi khi xóa: ' + (error.response?.data?.message || error.message))
+    // Axios để lỗi ở error.response.data
+      const msg = error.response?.data?.message || error.message || 'Xóa thất bại'
+      toast.error('Lỗi: ' + msg)
     } finally {
       setDeleting(false)
       setDeleteId(null)
